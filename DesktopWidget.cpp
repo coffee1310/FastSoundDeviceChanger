@@ -5,6 +5,7 @@
 #include "RtAudio.h"
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QPixmap>
 
 int get_device_names(std::vector<RtAudio::DeviceInfo>& names)
 {
@@ -33,8 +34,11 @@ int get_device_names(std::vector<RtAudio::DeviceInfo>& names)
 
 bool isInputDevice(RtAudio::DeviceInfo info)
 {
-    std::cout << info.inputChannels << std:: endl;
-    return true;
+    std::cout << "Input chanels " << info.inputChannels << std::endl;
+    if (info.inputChannels > 0) {
+        return true;
+    }
+    return false;
 }
 
 DesktopWidget::DesktopWidget(QWidget *parent) : QWidget(parent) {
@@ -46,6 +50,37 @@ DesktopWidget::DesktopWidget(QWidget *parent) : QWidget(parent) {
     for (size_t i = 0; i < names.size(); i++) {
         QLabel* device = new QLabel(this);
         QFont font = device->font();
+        QLabel* device_icon;
+        QPixmap device_label_icon;
+        QHBoxLayout* device_layout = new QHBoxLayout(this);
+
+        if (device_label_icon.load("C:\\Users\\user\\Desktop\\projects\\FastSoundDeviceChanger\\FastSoundDeviceChanger\\images\\microphone.png")) {
+            if (isInputDevice(names[i])) {
+                // Изображение успешно загружено
+                device_icon = new QLabel(this);
+                device_label_icon = device_label_icon.scaled(100,100, Qt::KeepAspectRatio);
+                device_icon->setPixmap(device_label_icon);
+
+                // Добавляем QLabel с иконкой в ваш интерфейс
+                device_icon->setParent(this);
+                //device_icon->setGeometry(10,10,50,50);
+            }
+            else {
+                // Изображение успешно загружено
+                device_icon = new QLabel(this);
+                device_label_icon = device_label_icon.scaled(100,100, Qt::KeepAspectRatio);
+                device_icon->setPixmap(device_label_icon);
+
+                // Добавляем QLabel с иконкой в ваш интерфейс
+                device_icon->setParent(this);
+                //device_icon->setGeometry(10,10,50,50);
+            }
+
+        } else {
+            // Обработка ошибки загрузки изображения
+            qDebug() << "Ошибка загрузки изображения";
+        }
+
         font.setFamily("Kreon");
         font.setPointSize(20);
         device->setFont(font);
@@ -54,11 +89,13 @@ DesktopWidget::DesktopWidget(QWidget *parent) : QWidget(parent) {
         device->setText(device_name);
 
         device->setStyleSheet("color: white;"
-                              "padding: 10;"
-                              "font-weight: 700;"
-                              "");
-        names_layout->addWidget(device);
-        names_layout->setAlignment(Qt::AlignCenter);
+                              "padding: 0;"
+                              "font-weight: 700;");
+        device_layout->addWidget(device_icon);
+        device_layout->addWidget(device);
+        device_layout->setAlignment(Qt::AlignLeft);
+        devices_layout->addLayout(device_layout);;
+        devices_layout->setAlignment(Qt::AlignCenter);
         isInputDevice(names[i]);
     }
 

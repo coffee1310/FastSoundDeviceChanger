@@ -6,6 +6,8 @@
 #include <QPushButton>
 #include "RtAudio.h"
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+
 int get_device_names(std::vector<RtAudio::DeviceInfo>& names);
 
 class DesktopWidget : public QWidget {
@@ -13,7 +15,8 @@ class DesktopWidget : public QWidget {
 private:
     QCoreApplication* app;
     std::vector<RtAudio::DeviceInfo> names;
-    QVBoxLayout* names_layout = new QVBoxLayout(this);
+    QVBoxLayout* devices_layout = new QVBoxLayout(this);
+
 public:
     DesktopWidget(QWidget *parent = nullptr);
 private slots:
